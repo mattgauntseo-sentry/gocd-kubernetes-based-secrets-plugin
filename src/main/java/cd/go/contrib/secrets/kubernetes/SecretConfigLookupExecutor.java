@@ -21,6 +21,7 @@ import static java.util.Collections.singletonMap;
 public class SecretConfigLookupExecutor extends LookupExecutor<SecretConfigRequest> {
     @Override
     protected GoPluginApiResponse execute(SecretConfigRequest request) {
+        LOG.error("SecretConfigLookupExecutor => execute()");
         SecretConfig secretConfig = request.getConfiguration();
         KubernetesClient client = KubernetesClientFactory.instance().client(secretConfig);
         try {

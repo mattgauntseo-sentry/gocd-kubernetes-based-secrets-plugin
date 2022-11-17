@@ -35,14 +35,14 @@ public class KubernetesClientFactory {
 
     public synchronized KubernetesClient client(SecretConfig secretConfig) {
         if (secretConfig.equals(this.secretConfig) && this.client != null) {
-            LOG.debug("Using previously created client.");
+            LOG.error("Using previously created client.");
             return this.client;
         }
 
-        LOG.debug(format("Creating a new client because {0}.", (client == null) ? "client is null" : "secret configuration has changed"));
+        LOG.error(format("Creating a new client because {0}.", (client == null) ? "client is null" : "secret configuration has changed"));
         this.secretConfig = secretConfig;
         this.client = createClientFor(secretConfig);
-        LOG.debug("New client is created.");
+        LOG.error("New client is created.");
         return this.client;
     }
 

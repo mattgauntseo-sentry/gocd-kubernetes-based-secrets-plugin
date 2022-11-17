@@ -8,6 +8,7 @@ import cd.go.plugin.base.validation.Validator;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public class CredentialValidator implements Validator {
 
     @Override
     public ValidationResult validate(Map<String, String> requestBody) {
+        LOG.error("CredentialValidator => validate()");
         ValidationResult validationResult = new ValidationResult();
 
         SecretConfig secretConfig = GsonTransformer.fromJson(GsonTransformer.toJson(requestBody), SecretConfig.class);
@@ -31,8 +33,9 @@ public class CredentialValidator implements Validator {
             if (secret == null) {
                 validationResult.add("kubernetes_secret_name", "Specified Kubernetes secret does not exists.");
             }
-        } catch (Exception e) {
+        } catch (KubernetesClientException e) {
             LOGGER.error("Failed to verify connection.", e);
+            LOGGER.error("Details:", e.getCode(), e.getStatus());
             String errorMessage = "Could not read specified secret. Either the connection with kubernetes cluster could not be established or the kubernetes secret does not exists.";
             validationResult.add("kubernetes_secret_name", errorMessage);
             validationResult.add("kubernetes_cluster_url", errorMessage);
